@@ -1,1 +1,1 @@
-REPROdwl.sh > Boucle pour télécharger les 6 fichier fastq
+REPROdwl.txt> Boucle pour télécharger les 6 fichier fastq

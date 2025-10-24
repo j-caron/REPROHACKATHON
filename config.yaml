@@ -1,4 +1,9 @@
+dataGenome: "data/genome"
+genomeURL: "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF_000013425.1_ASM1342v1/GCF_000013425.1_ASM1342v1_genomic.fna.gz"
 dataFastq: data/fastq
+dataTrimmed: data/trimmed
+dataMapped: "data/mapped"
+
 threads: 4
 sra_accessions:
   - SRR10379721

@@ -1,0 +1,27 @@
+
+FROM ubuntu:20.04
+
+LABEL maintainer="TonNom <ton.email@exemple.com>"
+LABEL description="Bowtie 0.12.7 environment for RNA-seq mapping (repro Peyrusson et al. 2020)"
+
+# Installation des dépendances
+RUN apt-get update && apt-get install -y \
+    build-essential wget zlib1g-dev python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Téléchargement et compilation de Bowtie 0.12.7
+WORKDIR /opt
+RUN wget https://downloads.sourceforge.net/project/bowtie-bio/bowtie/0.12.7/bowtie-0.12.7-src.zip && \
+    apt-get install -y unzip && \
+    unzip bowtie-0.12.7-src.zip && \
+    cd bowtie-0.12.7 && \
+    make && \
+    cp bowtie* /usr/local/bin/ && \
+    cd / && rm -rf /opt/bowtie-0.12.7 /opt/bowtie-0.12.7-src.zip
+
+# Vérification
+RUN bowtie --version
+
+WORKDIR /data
+CMD ["/bin/bash"]
+

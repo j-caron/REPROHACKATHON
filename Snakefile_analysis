@@ -1,0 +1,70 @@
+# Snakefile_analysis
+
+configfile: "config.yaml"
+shell.executable("/bin/bash")
+
+SAMPLES = config["sra_accessions"]
+
+rule all:
+    input:
+        expand(f"{config['dataMapped']}/{{sample}}.bam", sample=SAMPLES)
+
+# Trimming 
+rule trimming:
+    input:
+        f"{config['dataFastq']}/{{sample}}.fastq"
+    output:
+        f"{config['dataTrimmed']}/{{sample}}_trimmed.fq.gz"
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.0"
+    threads:
+        config["threads"]
+    shell:
+        """
+        mkdir -p {config[dataTrimmed]}
+        cutadapt -q 20 -m 25 -o {output} {input}
+        """
+
+# Indexation du génome
+rule index_genome:
+    input:
+        f"{config['dataGenome']}/genome.fasta"
+    output:
+        expand(
+            "{genomedir}/genome.{ext}",
+            genomedir=config["dataGenome"],
+            ext=["1.ebwt","2.ebwt","3.ebwt","4.ebwt","rev.1.ebwt","rev.2.ebwt"]
+        )
+    params:
+        genomedir = config["dataGenome"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.0"
+    shell:
+        """
+        bowtie-build {input} {params.genomedir}/genome
+        """
+
+# Mapping 
+rule mapping:
+    input:
+        trimmed = f"{config['dataTrimmed']}/{{sample}}_trimmed.fq.gz",
+        index = expand(
+            "{genomedir}/genome.{ext}",
+            genomedir=config["dataGenome"],
+            ext=["1.ebwt","2.ebwt","3.ebwt","4.ebwt","rev.1.ebwt","rev.2.ebwt"]
+        )
+    output:
+        f"{config['dataMapped']}/{{sample}}.bam"
+    params:
+        genomedir = config["dataGenome"],
+        mapdir = config["dataMapped"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.0"
+    threads:
+        config["threads"]
+    shell:
+        """
+        mkdir -p {params.mapdir}
+        bowtie -x {params.genomedir}/genome -U {input.trimmed} -p {threads} \
+        | samtools view -Sb - > {output}
+        """

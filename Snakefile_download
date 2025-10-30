@@ -1,0 +1,43 @@
+# Snakefile_download
+
+configfile: "config.yaml"
+shell.executable("/bin/bash")
+
+SAMPLES = config["sra_accessions"]
+
+rule all:
+    input:
+        expand(f"{config['dataFastq']}/{{sample}}.fastq", sample=SAMPLES),
+        f"{config['dataGenome']}/genome.fasta"
+
+# Téléchargement des FASTQ 
+rule download_fastq:
+    output:
+        "{dataFastq}/{sample}.fastq"
+    params:
+        outdir = config["dataFastq"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.0"
+    threads:
+        config["threads"]
+    shell:
+        """
+        mkdir -p {params.outdir}
+        fasterq-dump {wildcards.sample} -O {params.outdir} --threads {threads}
+        """
+
+# Téléchargement du génome 
+rule download_genome:
+    output:
+        f"{config['dataGenome']}/genome.fasta"
+    params:
+        genome_url = config["genomeURL"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.0"
+    shell:
+        """
+        mkdir -p {config[dataGenome]}
+        wget -O {config[dataGenome]}/genome.fna.gz {params.genome_url}
+        gunzip -c {config[dataGenome]}/genome.fna.gz > {output}
+        rm {config[dataGenome]}/genome.fna.gz
+        """

@@ -68,3 +68,21 @@ rule mapping:
         bowtie -x {params.genomedir}/genome -U {input.trimmed} -p {threads} \
         | samtools view -Sb - > {output}
         """
+
+# Comptage avec FeatureCounts
+rule featurecounts:
+    input:
+        bam = f"{config['dataMapped']}/{{sample}}.bam",
+        gtf = f"{config['dataGenome']}/annotation.gtf"
+    output:
+        counts = f"{config['dataCounts']}/{{sample}}_counts.txt"
+    threads:
+        config["threads"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.0"
+    shell:
+        """
+        mkdir -p {config[dataCounts]}
+        featureCounts -T {threads} -t gene -g ID -s 2 \
+            -a {input.gtf} -o {output.counts} {input.bam}
+        """

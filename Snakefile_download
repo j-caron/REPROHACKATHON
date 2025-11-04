@@ -1,5 +1,3 @@
-# Snakefile_download
-
 configfile: "config.yaml"
 shell.executable("/bin/bash")
 
@@ -8,36 +6,69 @@ SAMPLES = config["sra_accessions"]
 rule all:
     input:
         expand(f"{config['dataFastq']}/{{sample}}.fastq", sample=SAMPLES),
-        f"{config['dataGenome']}/genome.fasta"
+        f"{config['dataGenome']}/genome.fasta",
+        f"{config['dataGenome']}/genome.gff",
+        f"{config['dataGenome']}/genome.gbff",
+        f"{config['dataGenome']}/kegg_pathways.tsv"
 
-# Téléchargement des FASTQ 
+# Download FASTQ
 rule download_fastq:
     output:
-        "{dataFastq}/{sample}.fastq"
+        f"{config['dataFastq']}/{{sample}}.fastq"
     params:
         outdir = config["dataFastq"]
     container:
-        "docker://mmousg/reprohackaton-tools:v1.0"
+        "docker://mmousg/reprohackaton-tools:v1.1"
     threads:
         config["threads"]
     shell:
-        """
-        mkdir -p {params.outdir}
-        fasterq-dump {wildcards.sample} -O {params.outdir} --threads {threads}
+        r"""
+        mkdir -p "{params.outdir}"
+        fasterq-dump {wildcards.sample} -O "{params.outdir}" --threads {threads}
         """
 
-# Téléchargement du génome 
+# Download Genome
 rule download_genome:
     output:
         f"{config['dataGenome']}/genome.fasta"
     params:
         genome_url = config["genomeURL"]
     container:
-        "docker://mmousg/reprohackaton-tools:v1.0"
+        "docker://mmousg/reprohackaton-tools:v1.1"
     shell:
+        r"""
+        mkdir -p "{config[dataGenome]}"
+        wget -O "{config[dataGenome]}/genome.fna.gz" "{params.genome_url}" && \
+        gunzip -c "{config[dataGenome]}/genome.fna.gz" > "{output}" && \
+        rm "{config[dataGenome]}/genome.fna.gz"
         """
-        mkdir -p {config[dataGenome]}
-        wget -O {config[dataGenome]}/genome.fna.gz {params.genome_url}
-        gunzip -c {config[dataGenome]}/genome.fna.gz > {output}
-        rm {config[dataGenome]}/genome.fna.gz
+
+# Download Genome Annotations (GFF + GBFF)
+rule download_annotations:
+    output:
+        gff  = f"{config['dataGenome']}/genome.gff",
+        gbff = f"{config['dataGenome']}/genome.gbff"
+    params:
+        base_url = config["genomeBaseURL"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.1"
+    shell:
+        r"""
+        mkdir -p "{config[dataGenome]}"
+        wget -O "{output.gff}.gz"  "{params.base_url}_genomic.gff.gz" && gunzip -f "{output.gff}.gz"
+        wget -O "{output.gbff}.gz" "{params.base_url}_genomic.gbff.gz" && gunzip -f "{output.gbff}.gz"
+        """
+
+# Download KEGG Gene-Pathway Mapping
+rule download_kegg_pathways:
+    output:
+        f"{config['dataGenome']}/kegg_pathways.tsv"
+    params:
+        org = config["kegg_org"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.1"
+    shell:
+        r"""
+        mkdir -p "{config[dataGenome]}"
+        wget -q -O "{output}" "https://rest.kegg.jp/link/pathway/{params.org}"
         """

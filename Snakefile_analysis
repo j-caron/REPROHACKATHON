@@ -1,5 +1,3 @@
-# Snakefile_analysis
-
 configfile: "config.yaml"
 shell.executable("/bin/bash")
 
@@ -7,7 +5,8 @@ SAMPLES = config["sra_accessions"]
 
 rule all:
     input:
-        expand(f"{config['dataMapped']}/{{sample}}.bam", sample=SAMPLES)
+        expand(f"{config['dataMapped']}/{{sample}}.bam", sample=SAMPLES),
+        "data/counts/all_counts_with_header.txt"
 
 # Trimming 
 rule trimming:
@@ -16,13 +15,13 @@ rule trimming:
     output:
         f"{config['dataTrimmed']}/{{sample}}_trimmed.fq.gz"
     container:
-        "docker://mmousg/reprohackaton-tools:v1.0"
+        "docker://mmousg/reprohackaton-tools:v1.1"
     threads:
         config["threads"]
     shell:
         """
-        mkdir -p {config[dataTrimmed]}
-        cutadapt -q 20 -m 25 -o {output} {input}
+        mkdir -p "{config[dataTrimmed]}"
+        cutadapt -m 25 -o {output} {input}
         """
 
 # Indexation du génome
@@ -31,26 +30,24 @@ rule index_genome:
         f"{config['dataGenome']}/genome.fasta"
     output:
         expand(
-            "{genomedir}/genome.{ext}",
-            genomedir=config["dataGenome"],
+            f"{config['dataGenome']}/genome.{{ext}}",
             ext=["1.ebwt","2.ebwt","3.ebwt","4.ebwt","rev.1.ebwt","rev.2.ebwt"]
         )
     params:
         genomedir = config["dataGenome"]
     container:
-        "docker://mmousg/reprohackaton-tools:v1.0"
+        "docker://mmousg/reprohackaton-tools:v1.1"
     shell:
         """
         bowtie-build {input} {params.genomedir}/genome
         """
 
-# Mapping 
+# Mapping
 rule mapping:
     input:
         trimmed = f"{config['dataTrimmed']}/{{sample}}_trimmed.fq.gz",
         index = expand(
-            "{genomedir}/genome.{ext}",
-            genomedir=config["dataGenome"],
+            f"{config['dataGenome']}/genome.{{ext}}",
             ext=["1.ebwt","2.ebwt","3.ebwt","4.ebwt","rev.1.ebwt","rev.2.ebwt"]
         )
     output:
@@ -59,30 +56,80 @@ rule mapping:
         genomedir = config["dataGenome"],
         mapdir = config["dataMapped"]
     container:
-        "docker://mmousg/reprohackaton-tools:v1.0"
+        "docker://mmousg/reprohackaton-tools:v1.1"
     threads:
         config["threads"]
     shell:
-        """
-        mkdir -p {params.mapdir}
-        bowtie -x {params.genomedir}/genome -U {input.trimmed} -p {threads} \
+        r"""
+        mkdir -p "{params.mapdir}"
+
+        # Décompressession du fichier fastq 
+        TMPFASTQ="{params.mapdir}/{wildcards.sample}_tmp.fq"
+        gunzip -c {input.trimmed} > $TMPFASTQ
+
+        bowtie -q -S {params.genomedir}/genome $TMPFASTQ \
         | samtools view -Sb - > {output}
+
+        # Nettoyage
+        rm -f $TMPFASTQ
         """
+
 
 # Comptage avec FeatureCounts
 rule featurecounts:
     input:
         bam = f"{config['dataMapped']}/{{sample}}.bam",
-        gtf = f"{config['dataGenome']}/annotation.gtf"
+        gtf = f"{config['dataGenome']}/genome.gff"
     output:
         counts = f"{config['dataCounts']}/{{sample}}_counts.txt"
     threads:
         config["threads"]
     container:
-        "docker://mmousg/reprohackaton-tools:v1.0"
+        "docker://mmousg/reprohackaton-tools:v1.1"
     shell:
         """
-        mkdir -p {config[dataCounts]}
-        featureCounts -T {threads} -t gene -g ID -s 2 \
+        mkdir -p "{config[dataCounts]}"
+        featureCounts -T {threads} -t gene -g locus_tag -s 2 \
             -a {input.gtf} -o {output.counts} {input.bam}
         """
+
+rule merge_counts:
+    input:
+        expand(f"{config['dataCounts']}/{{sample}}_counts.txt", sample=SAMPLES)
+    output:
+        "data/counts/all_counts.txt"
+    shell:
+        r"""
+        mkdir -p "$(dirname {output})"
+
+        # Extraction de la colonne des identifiants de gènes
+        cut -f1 {input[0]} > gene_ids.tmp
+
+        # Extraction de la colonne 7 (les counts) de chaque fichier
+        tmp_files=()
+        for f in {input}; do
+            tmp="${{f}}.tmp"
+            cut -f7 "$f" | tail -n +3 > "$tmp"
+            tmp_files+=("$tmp")
+        done
+
+        # Fusionn de la colonne Geneid et toutes les colonnes de comptage
+        paste gene_ids.tmp "${{tmp_files[@]}}" > {output}
+
+        # Nettoyage
+        rm -f gene_ids.tmp "${{tmp_files[@]}}"
+        """
+
+# Ajout de l'entête dans le fichier de comptage fusionné
+rule add_header:
+    input:
+        "data/counts/all_counts.txt"
+    output:
+        "data/counts/all_counts_with_header.txt"
+    shell:
+        r"""
+        cd data/counts
+        echo -e "Geneid\tSRR10379721\tSRR10379722\tSRR10379723\tSRR10379724\tSRR10379725\tSRR10379726" > all_counts_with_header.txt
+        tail -n +3 all_counts.txt >> all_counts_with_header.txt
+        """
+

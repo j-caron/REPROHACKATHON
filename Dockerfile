@@ -30,6 +30,8 @@ RUN wget -t 5 --wait=15 --retry-connrefused -O sra-toolkit.tar.gz "https://ftp-t
     chmod +x sratoolkit.3.2.1-ubuntu64/bin/* && \
     mv sratoolkit.3.2.1-ubuntu64/bin/* /usr/local/bin/
 
+# Add SRA Toolkit to PATH
+ENV PATH="/opt/sratoolkit.3.2.1-ubuntu64/bin:${PATH}"
 
 # Java (required for FastQC)
 RUN apt-get update && apt-get install -y default-jre && \
@@ -77,5 +79,9 @@ RUN wget -q -O subread.tar.gz "https://sourceforge.net/projects/subread/files/su
     rm subread.tar.gz && \
     chmod -R +x subread-1.4.6-p3-Linux-x86_64/bin && \
     mv subread-1.4.6-p3-Linux-x86_64/bin/* /usr/local/bin/
+
+
+ENV PATH="/usr/local/bin:${PATH}"
+
 
 WORKDIR /data

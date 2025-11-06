@@ -1,0 +1,23 @@
+FROM rocker/r-ver:3.4.1
+
+# Corriger les dépôts Debian (Stretch archive)
+RUN sed -i '/security.debian.org/d' /etc/apt/sources.list && \
+    sed -i '/stretch-updates/d' /etc/apt/sources.list && \
+    sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/sources.list && \
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99ignore-valid && \
+    apt-get update -o Acquire::Check-Valid-Until=false && \
+    apt-get install -y \
+        wget curl ca-certificates \
+        libxml2-dev libssl-dev libcurl4-openssl-dev \
+        libpng-dev libjpeg-dev libfontconfig1-dev \
+        libblas-dev liblapack-dev gfortran build-essential && \
+    apt-get clean
+
+# Installer biocLite + dépendances + DESeq2
+RUN wget -O /tmp/biocLite.R https://web.archive.org/web/20170715000000if_/https://bioconductor.org/biocLite.R && \
+    Rscript -e "source('/tmp/biocLite.R'); \
+                biocLite(c('genefilter', 'locfit', 'geneplotter', 'ggplot2', 'Hmisc', 'RcppArmadillo', 'EnrichmentBrowser'))"
+    wget -O /tmp/DESeq2_1.16.1.tar.gz \
+      'https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/DESeq2_1.16.1.tar.gz' && \
+    R CMD INSTALL /tmp/DESeq2_1.16.1.tar.gz && \
+    rm /tmp/DESeq2_1.16.1.tar.gz

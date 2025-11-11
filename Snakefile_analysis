@@ -89,7 +89,7 @@ rule featurecounts:
     shell:
         """
         mkdir -p "{config[dataCounts]}"
-        featureCounts -T {threads} -t gene -g locus_tag -s 2 \
+        featureCounts -T {threads} -t gene -g locus_tag -s 1 \
             -a {input.gtf} -o {output.counts} {input.bam}
         """
 
@@ -102,23 +102,35 @@ rule merge_counts:
         r"""
         mkdir -p "$(dirname {output})"
 
-        # Extraction de la colonne des identifiants de gènes
+        # Extraire la colonne des identifiants de gènes
         cut -f1 {input[0]} > gene_ids.tmp
 
-        # Extraction de la colonne 7 (les counts) de chaque fichier
+        # Créer une ligne d'en-tête (Geneid + noms d’échantillons)
+        echo -ne "Geneid" > header.tmp
+        for f in {input}; do
+            sample=$(basename "$f" | sed 's/_counts.txt//')
+            echo -ne "\t$sample" >> header.tmp
+        done
+        echo >> header.tmp
+
+        # Extraire la colonne 7 (counts) de chaque fichier, sans ignorer de lignes
         tmp_files=()
         for f in {input}; do
             tmp="${{f}}.tmp"
-            cut -f7 "$f" | tail -n +3 > "$tmp"
+            cut -f7 "$f" > "$tmp"
             tmp_files+=("$tmp")
         done
 
-        # Fusionn de la colonne Geneid et toutes les colonnes de comptage
-        paste gene_ids.tmp "${{tmp_files[@]}}" > {output}
+        # Fusionner les colonnes
+        paste gene_ids.tmp "${{tmp_files[@]}}" > body.tmp
+
+        # Combiner l’en-tête et les données
+        cat header.tmp body.tmp > {output}
 
         # Nettoyage
-        rm -f gene_ids.tmp "${{tmp_files[@]}}"
+        rm -f gene_ids.tmp "${{tmp_files[@]}}" header.tmp body.tmp
         """
+
 
 # Ajout de l'entête dans le fichier de comptage fusionné
 rule add_header:
@@ -130,6 +142,6 @@ rule add_header:
         r"""
         cd data/counts
         echo -e "Geneid\tSRR10379721\tSRR10379722\tSRR10379723\tSRR10379724\tSRR10379725\tSRR10379726" > all_counts_with_header.txt
-        tail -n +3 all_counts.txt >> all_counts_with_header.txt
+        tail -n +4 all_counts.txt >> all_counts_with_header.txt
         """
 

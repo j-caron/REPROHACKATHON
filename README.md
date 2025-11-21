@@ -1,3 +1,5 @@
+- Signification des fichiers -
+
 DESeq.R > Code R d'analyse stat
 DockerFile_R > Image Docker pour DESeq2
 Dockerfile > Image Docker pour l'analyse RNAseq 

@@ -1,0 +1,50 @@
+###############################################
+# Snakefile_R — pipeline DESeq2 seul
+###############################################
+
+configfile: "config_analysis_R.yaml"
+shell.executable("/bin/bash")
+
+###############################################
+# RULE ALL
+###############################################
+
+rule all:
+    input:
+        "data/results/volcano_plot.png",
+        "data/results/PCA_plot.png",
+        "data/results/data_perso.csv",
+        "data/results/comparison_means.csv"
+
+###############################################
+# Rule: Télécharger le tableau de l'article
+###############################################
+
+rule download_article_table:
+    output:
+        "data/GSE139659_IPvsctrl.complete.xls.gz"
+    shell:
+        """
+        mkdir -p data
+        wget -O {output} "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE139659&format=file&file=GSE139659%5FIPvsctrl%2Ecomplete%2Exls%2Egz"
+        """
+
+###############################################
+# Rule: Analyse DESeq2
+###############################################
+
+rule deseq_analysis:
+    input:
+        counts  = config["counts_file"],
+        article = config["article_file"]
+    output:
+        volcano = "data/results/volcano_plot.png",
+        pca     = "data/results/PCA_plot.png",
+        data_perso = "data/results/data_perso.csv",
+        comparison = "data/results/comparison_means.csv"
+    params:
+        outdir = "data/results"
+    container:
+        config["docker_image"]
+    script:
+        "DESeq.R"

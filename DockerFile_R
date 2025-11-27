@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libtiff-dev \
     libicu-dev \
+    libcairo2-dev \
     ca-certificates
 
 
@@ -431,6 +432,36 @@ RUN cd /tmp && \
     wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/DESeq2_1.16.1.tar.gz && \
     R CMD INSTALL DESeq2_1.16.1.tar.gz && \
     rm DESeq2_1.16.1.tar.gz
+# Installation EdgeR + Limma + ggrepel
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/limma_3.32.10.tar.gz && \
+    R CMD INSTALL limma_3.32.10.tar.gz && \
+    rm limma_3.32.10.tar.gz
+
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/edgeR_3.18.1.tar.gz && \
+    R CMD INSTALL edgeR_3.18.1.tar.gz && \
+    rm edgeR_3.18.1.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/rlang/rlang_0.4.0.tar.gz && \
+    R CMD INSTALL rlang_0.4.0.tar.gz && \
+    rm rlang_0.4.0.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/withr/withr_2.1.2.tar.gz && \
+    R CMD INSTALL withr_2.1.2.tar.gz && \
+    rm withr_2.1.2.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/ggrepel/ggrepel_0.8.0.tar.gz && \
+    R CMD INSTALL ggrepel_0.8.0.tar.gz && \
+    rm ggrepel_0.8.0.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/Cairo/Cairo_1.5-9.tar.gz && \
+    R CMD INSTALL Cairo_1.5-9.tar.gz && \
+    rm Cairo_1.5-9.tar.gz
 
 # ------------------------------------------------------------
 # 7) Vérification

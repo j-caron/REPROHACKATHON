@@ -41,13 +41,13 @@ git clone https://github.com/j-caron/REPROHACKATHON.git
 cd REPROHACKATHON/
 ```
 
-### 2. Lancement de l'image Docker
+### 2. Lancement de l'image Docker */ Des images Docker ?*
 
 ```bash
 code pour lancer l'image
 ```
 
-### 3. Exécution du workflow Snakemake 
+### 3. Exécution du workflow Snakemake */Des workflows Snakemake ?* 
 
 ```bash
 code pour lancer l'exécution
@@ -59,13 +59,13 @@ Les résultats seront automatiquement générés dans le dossier `output/`.
 
 Les workflows Snakemake sont à exécuter successivement :
 
-1. **Téléchargement des fastq**
+1. **Téléchargement des fastq**\
     *Snakefile_download*
 
-2.  **Pipeline NGS**
+2.  **Pipeline NGS**\
     *Snakefile_analysis*
 
-3.  **Analyse statistique et visualisations**
+3.  **Analyse statistique et visualisations**\
     *Snakefile_R*
 
 ## Résultats

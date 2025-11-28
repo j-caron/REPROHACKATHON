@@ -1,12 +1,12 @@
-# ReproHackathon – Analyse reproductible de données biologiques
+# ReproHackathon – Reproduction des données de `mettre article`
 
 ## Présentation du projet
 
-*Définition du projet –*
+*Description*
 
 ------------------------------------------------------------------------
 
-## Structure du dépôt - *Refaire en mieux !*
+## Structure du dépôt - *Refaire en mieux quand on aura les infos !*
 
 reprohackathon-project/\
 
@@ -57,26 +57,26 @@ Les résultats seront automatiquement générés dans le dossier `output/`.
 
 ## Description du workflow
 
-Le workflow Snakemake est structuré en plusieurs étapes successives :
+Les workflows Snakemake sont à exécuter successivement :
 
-1. **Préparation des données**\
-    Nettoyage, harmonisation et vérification des fichiers d'entrée.
+1. **Téléchargement des fastq**
+    Snakefile_download
 
-2.  **Analyse principale**\
-    Exécution des scripts d'analyse (R ou Python) définis dans les règles Snakemake.
+2.  **Pipeline NGS**
+    Snakefile_analysis
 
-3.  **Visualisation**\
-    Production de figures et graphiques synthétiques enregistrés dans `output/`.
+3.  **Analyse statistique et visualisations**
+    Snakefile_R
 
 ## Résultats
 
 Les résultats de l'analyse sont disponibles dans le dossier `output/`.
 
-| Type de résultat | Fichier exemple                       | Description                               |
+| Type de résultat | Fichier                               | Description                               |
 |------------------|---------------------------------------|-------------------------------------------|
-| Graphique        | `output/temperature_distribution.png` | MA plot des données totales               |
-| Graphique        | `output/species_frequency.png`        | MA plot des gènes liés à la traduction    |
-| Graphique        | `output/model_summary.txt`            | Volcano plot                              |
+| Graphique        |                                       | MA plot des données totales               |
+| Graphique        |                                       | MA plot des gènes liés à la traduction    |
+| Graphique        |                                       | Volcano plot                              |
 | Graphique        |                                       | PCA plot                                  |
 
 ## Auteurs

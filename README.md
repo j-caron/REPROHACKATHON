@@ -12,27 +12,23 @@ reprohackathon-project/\
 
 │\
 
-├── Data/ \# Données brutes d'entrée (.csv, .tsv, etc.)\
+├── Data/
 
-├── Snakemake/ \# Snakefiles et règles Snakemake\
+├── Snakemake/
 
-│ ├── Snakefiles/ \# Fichiers principaux du workflow\
+│ ├── Snakefiles/
 
-│ └── rules/ \# Règles modulaires (étapes spécifiques)\
+├── Docker/
 
-├── Docker/ \# Fichiers de construction de l'image Docker\
+│ ├── Dockerfiles/
 
-│ ├── Dockerfiles/ \# Images Docker du projet
+│ └── requirements.txt
 
-│ └── requirements.txt \# Dépendances (Python, R, etc.)\
+├── config/
 
-├── scripts/ \# Scripts d'analyse exécutés par Snakemake\
+├── Output/
 
-├── config/ \# Fichiers de configuration (paramètres, chemins)\
-
-├── Output/ \# Résultats finaux (graphes, tableaux, modèles)\
-
-└── README.md \# Documentation principale du projet\
+└── README.md 
 
 ---
 

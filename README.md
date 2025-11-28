@@ -37,8 +37,8 @@ REPROHACKATHON/\
 ### 1. Clonage du dépôt
 
 ```bash
-git clone https://github.com/tonpseudo/reprohackathon-project.git
-cd reprohackathon-project
+git clone https://github.com/j-caron/REPROHACKATHON.git
+cd REPROHACKATHON/
 ```
 
 ### 2. Lancement de l'image Docker
@@ -60,17 +60,17 @@ Les résultats seront automatiquement générés dans le dossier `output/`.
 Les workflows Snakemake sont à exécuter successivement :
 
 1. **Téléchargement des fastq**
-    Snakefile_download
+    *Snakefile_download*
 
 2.  **Pipeline NGS**
-    Snakefile_analysis
+    *Snakefile_analysis*
 
 3.  **Analyse statistique et visualisations**
-    Snakefile_R
+    *Snakefile_R*
 
 ## Résultats
 
-Les résultats de l'analyse sont disponibles dans le dossier `output/`.
+Les résultats de l'analyse sont disponibles dans le dossier `Output/`.
 
 | Type de résultat | Fichier                               | Description                               |
 |------------------|---------------------------------------|-------------------------------------------|

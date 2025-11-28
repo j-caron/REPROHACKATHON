@@ -1,4 +1,5 @@
 counts_file: "data/counts/all_counts_with_header.txt"
 article_file: "data/GSE139659_IPvsctrl.complete.xls.gz"
+kegg_file: "kegg_pathways.tsv"
 
 docker_image: "docker://agash00/r341_deseq2:1.16"

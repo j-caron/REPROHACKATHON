@@ -14,7 +14,9 @@ rule all:
         "data/results/volcano_plot.png",
         "data/results/PCA_plot.png",
         "data/results/data_perso.csv",
-        "data/results/comparison_means.csv"
+        "data/results/comparison_means.csv",
+        "data/results/MA_plot.png"
+
 
 ###############################################
 # Rule: Télécharger le tableau de l'article
@@ -48,3 +50,17 @@ rule deseq_analysis:
         config["docker_image"]
     script:
         "DESeq.R"
+
+rule ma_plot:
+    input:
+        data_perso = "data/results/data_perso.csv",
+        kegg = config["kegg_file"]
+    output:
+        "data/results/MA_plot.png"
+    params:
+        outdir = "data/results"
+    container:
+        config["docker_image"]
+    script:
+        "MA_plot.R"
+

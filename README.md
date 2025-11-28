@@ -1,10 +1,6 @@
-# ReproHackathon – Reproduction des données de `mettre article`
+# ReproHackathon – Reproduction des données d'un article scientifique
 
-## Présentation du projet
-
-*Description*
-
-------------------------------------------------------------------------
+Reproduction des données de l'article "Intracellular Staphylococcus aureus persisters upon antibiotic exposure" *(Peyrusson et al., https://doi.org/10.1038/s41467-020-15966-7)*
 
 ## Structure du dépôt - *Refaire en mieux quand on aura les infos !*
 

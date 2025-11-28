@@ -8,7 +8,7 @@
 
 ## Structure du dépôt - *Refaire en mieux quand on aura les infos !*
 
-reprohackathon-project/\
+REPROHACKATHON/\
 
 │\
 

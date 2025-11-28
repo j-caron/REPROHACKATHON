@@ -52,8 +52,9 @@ gene_info_df <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# 3. Joindre proprement à ton tableau de comptage
+# 3. Joindre au tableau de comptage
 data_final <- merge(data, gene_info_df, by = "Geneid", all.x = TRUE)
+
 
 
 

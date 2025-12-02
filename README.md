@@ -32,15 +32,15 @@ REPROHACKATHON/\
 Les analyses ont été réalisées sur une machine virtuelle fournie par l’IFB-Biosphère.
 
 ### 1. Caractéristiques de la VM
-- **16 cœurs CPU**
-- **64 Go de RAM**
-- **120 Go de stockage**
-- **Système d’exploitation : Ubuntu 22.04 (Appliance IFB)**
+- 16 cœurs CPU
+- 64 Go de RAM
+- 120 Go de stockage
+- Système d’exploitation : Ubuntu 22.04 (Appliance IFB)
 
 ### 2. Identifiant de l’appliance
-- **Nom :** Appliance Ubuntu 22.04  
-- **ID :** `ubuntu-ifb`  
-- **Recipe Git :** https://gitlab.in2p3.fr/ifb-biosphere/apps/ubuntu-ifb
+- Nom : Appliance Ubuntu 22.04  
+- ID : `ubuntu-ifb`  
+- Recipe Git : https://gitlab.in2p3.fr/ifb-biosphere/apps/ubuntu-ifb
 
 
 ## Installation et exécution

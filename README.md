@@ -45,11 +45,6 @@ Les analyses ont été réalisées sur une machine virtuelle fournie par l’IFB
 
 ## Installation et exécution
 
-###Pré-installations: Docker et Snakemake
-
-```bash
-installation de snakemake et docker
-```
 
 ### 1. Clonage du dépôt
 
@@ -58,7 +53,16 @@ git clone https://github.com/j-caron/REPROHACKATHON.git
 cd REPROHACKATHON/
 ```
 
-### 2. Exécution des workflows Snakemake 
+### 2. Pré-installations: Docker et Snakemake
+
+Pour reproduire exactement l’environnement utilisé dans la VM :
+
+```bash
+conda env create -f environment.yaml
+conda activate snakemake_env
+```
+
+### 3. Exécution des workflows Snakemake 
 
 ```bash
 snakemake -s Snakemake/Snakefile_download --use-singularity -j 16 -p

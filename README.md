@@ -30,6 +30,12 @@ REPROHACKATHON/\
 
 ## Installation et exécution
 
+###Pré-installations: Docker et Snakemake
+
+```bash
+installation de snakemake et docker
+```
+
 ### 1. Clonage du dépôt
 
 ```bash

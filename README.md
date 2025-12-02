@@ -46,7 +46,8 @@ cd REPROHACKATHON/
 ### 2. Exécution des workflows Snakemake 
 
 ```bash
-code pour lancer l'exécution
+snakemake -s Snakemake/Snakefile_download --use-singularity -j 16 -p
+snakemake -s Snakemake/Snakefile_analysis --use-singularity -j 8 -p
 ```
 
 Les résultats seront automatiquement générés dans le dossier `output/`.\

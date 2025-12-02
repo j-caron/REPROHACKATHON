@@ -37,19 +37,14 @@ git clone https://github.com/j-caron/REPROHACKATHON.git
 cd REPROHACKATHON/
 ```
 
-### 2. Lancement de l'image Docker */ Des images Docker ?*
-
-```bash
-code pour lancer l'image
-```
-
-### 3. Exécution du workflow Snakemake */Des workflows Snakemake ?* 
+### 2. Exécution des workflows Snakemake 
 
 ```bash
 code pour lancer l'exécution
 ```
 
-Les résultats seront automatiquement générés dans le dossier `output/`.
+Les résultats seront automatiquement générés dans le dossier `output/`.\
+Les images Docker viennent de *mettre liens*.
 
 ## Description du workflow
 
@@ -77,4 +72,4 @@ Les résultats de l'analyse sont disponibles dans le dossier `Output/`.
 
 ## Auteurs
 
-**Là on met nos noms et ce qu'on a fait**
+CARON Jérémy, GUEYE Mouhamadou Moustapha, UTHAYAKUMAR Agash

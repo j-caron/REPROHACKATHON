@@ -108,21 +108,24 @@ snakemake -s Snakemake/Snakefile_analysis --use-singularity -j 8 -p
 ```
 
 Les résultats seront automatiquement générés dans le dossier `output/`.\
-Les images Docker viennent des Dockerfiles disponibles dans `Docker`, et sont disponibles sur le Docker Hub avec les liens <docker://mmousg/reprohackaton-tools:v1.1>, et <docker://agash00/r341_deseq2:1.16>.
-
+Les images Docker viennent des Dockerfiles disponibles dans `Docker`, et sont disponibles sur le Docker Hub avec les liens _<docker://mmousg/reprohackaton-tools:v1.1>_, et _<docker://agash00/r341_deseq2:1.16>_.
 
 ## Description du workflow
 
-Les workflows Snakemake sont à exécuter successivement :
+Les workflows Snakemake sont les suivants :
 
-1. **Téléchargement des fastq**\
-    *Snakefile_download*
+1. **Snakefile_download**\
+Récupération des fastq et des génomes de référence via la database SRA.
 
-2.  **Pipeline NGS**\
-    *Snakefile_analysis*
-
-3.  **Analyse statistique et visualisations**\
-    *Snakefile_R*
+2.  **Snakefile_analysis**\
+Manipulation des fastq: 
+- Trimming des fastq avec cutadapt 
+- Indexation du génome avec bowtie
+- Mapping des fastq sur le génome de référence avec bowtie et récupération du fichier BAM avec samtools
+- Comptage avec featureCounts
+  
+3.  **Snakefile_R**\
+Analyse statistique des comptages obtenus avec DESeq2, ajout des id des gènes avec l'API KEGG et réalisation des graphes (MA plot, ACP, Volcano plot et MA plot des gènes liés à la traduction).
 
 ## Résultats
 
@@ -131,9 +134,11 @@ Les résultats de l'analyse sont disponibles dans le dossier `Output/`.
 | Type de résultat | Fichier                               | Description                               |
 |------------------|---------------------------------------|-------------------------------------------|
 | Graphique        |                                       | MA plot des données totales               |
-| Graphique        |                                       | MA plot des gènes liés à la traduction    |
-| Graphique        |                                       | Volcano plot                              |
+| Graphique        | PCA_plot.png                          | MA plot des gènes liés à la traduction    |
+| Graphique        | volcano_plot.png                      | Volcano plot                              |
 | Graphique        |                                       | PCA plot                                  |
+| Tableau          | .csv                                  | Comptages, logFC et nom des gènes         |
+| Tableau          | .csv                                  | Comparaison des données de l'article et de nos données |
 
 ## Auteurs
 

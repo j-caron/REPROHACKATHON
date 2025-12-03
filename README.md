@@ -4,7 +4,7 @@ Reproduction des données de l'article "Intracellular Staphylococcus aureus pers
 
 ## Structure du dépôt - *Refaire en mieux quand on aura les infos !*
 
-.
+. \
 ├── Docker \
 │   ├── DockerFile_R \
 │   ├── Dockerfile \

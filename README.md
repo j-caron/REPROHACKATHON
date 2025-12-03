@@ -108,7 +108,8 @@ snakemake -s Snakemake/Snakefile_analysis --use-singularity -j 8 -p
 ```
 
 Les résultats seront automatiquement générés dans le dossier `output/`.\
-Les images Docker viennent de *mettre liens*.
+Les images Docker viennent des Dockerfiles disponibles dans `Docker`, et sont disponibles sur le Docker Hub avec les liens <docker://mmousg/reprohackaton-tools:v1.1>, et <docker://agash00/r341_deseq2:1.16>.
+
 
 ## Description du workflow
 

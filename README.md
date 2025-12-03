@@ -4,27 +4,65 @@ Reproduction des données de l'article "Intracellular Staphylococcus aureus pers
 
 ## Structure du dépôt - *Refaire en mieux quand on aura les infos !*
 
-REPROHACKATHON/\
+.
+├── Docker \
+│   ├── DockerFile_R \
+│   ├── Dockerfile \
+│   └── requirements.txt \
+├── Outputs \
+│   ├── counts \
+│   │   ├── SRR10379721_counts.txt \
+│   │   ├── SRR10379721_counts.txt.summary \
+│   │   ├── SRR10379722_counts.txt \
+│   │   ├── SRR10379722_counts.txt.summary \
+│   │   ├── SRR10379723_counts.txt \
+│   │   ├── SRR10379723_counts.txt.summary \
+│   │   ├── SRR10379724_counts.txt \
+│   │   ├── SRR10379724_counts.txt.summary \
+│   │   ├── SRR10379725_counts.txt \
+│   │   ├── SRR10379725_counts.txt.summary \
+│   │   ├── SRR10379726_counts.txt \
+│   │   ├── SRR10379726_counts.txt.summary \
+│   │   ├── all_counts.txt \
+│   │   └── all_counts_with_header.txt \
+│   ├── fastq \
+│   │   ├── SRR10379721.fastq \
+│   │   ├── SRR10379722.fastq \
+│   │   ├── SRR10379723.fastq \
+│   │   ├── SRR10379724.fastq \
+│   │   ├── SRR10379725.fastq \
+│   │   └── SRR10379726.fastq \
+│   ├── genome \
+│   │   ├── genome.1.ebwt \
+│   │   ├── genome.2.ebwt \
+│   │   ├── genome.3.ebwt \
+│   │   ├── genome.4.ebwt \
+│   │   ├── genome.fasta \
+│   │   ├── genome.gff \
+│   │   ├── genome.rev.1.ebwt \
+│   │   ├── genome.rev.2.ebwt \
+│   │   └── kegg_pathways.tsv \
+│   ├── mapped \
+│   │   ├── SRR10379721.bam \
+│   │   ├── SRR10379722.bam \
+│   │   ├── SRR10379723.bam \
+│   │   ├── SRR10379724.bam \
+│   │   ├── SRR10379725.bam \
+│   │   └── SRR10379726.bam \
+│   └── trimmed \
+│       ├── SRR10379722_trimmed.fq.gz \
+│       ├── SRR10379723_trimmed.fq.gz \
+│       ├── SRR10379724_trimmed.fq.gz \
+│       ├── SRR10379725_trimmed.fq.gz \
+│       └── SRR10379726_trimmed.fq.gz \
+├── Snakemake \
+│   ├── Snakefile_analysis \
+│   ├── Snakefile_download \
+│   └── config.yaml \
+├── arborescence.txt \
+└── environment.yaml \
 
-│\
-
-├── Data/
-
-├── Snakemake/
-
-│ ├── Snakefiles/
-
-├── Docker/
-
-│ ├── Dockerfiles/
-
-│ └── requirements.txt
-
-├── config/
-
-├── Output/
-
-└── README.md 
+8 directories, 48 files
 
 ---
 ## Environnement de calcul utilisé

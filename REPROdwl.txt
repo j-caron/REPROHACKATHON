@@ -1,7 +1,0 @@
-#!/bin/bash
-
-for X in 1 2 3 4 5 6; do
-	echo "Téléchargement du fichier SRR1037972${X}"
-	fasterq-dump --threads 8 --progress SRR1037972${X}
-done
-

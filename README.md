@@ -2,7 +2,7 @@
 
 Reproduction des données de l'article "Intracellular Staphylococcus aureus persisters upon antibiotic exposure" *(Peyrusson et al., https://doi.org/10.1038/s41467-020-15966-7)*
 
-## Structure du dépôt - *Refaire en mieux quand on aura les infos !*
+## Structure du dépôt
 
 . \
 ├── Docker \
@@ -110,6 +110,7 @@ conda activate snakemake_env
 ```bash
 snakemake -s Snakemake/Snakefile_download --use-singularity -j 16 -p
 snakemake -s Snakemake/Snakefile_analysis --use-singularity -j 8 -p
+snakemake -s Snakemake/Snakefile_R --cores 16 --use-singularity -p
 ```
 
 Les résultats seront automatiquement générés dans le dossier `output/`.\

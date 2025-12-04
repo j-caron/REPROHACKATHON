@@ -115,10 +115,9 @@ Les images Docker viennent des Dockerfiles disponibles dans `Docker`, et sont di
 Les workflows Snakemake sont les suivants :
 
 1. **Snakefile_download**\
-Récupération des fastq et des génomes de référence via la database SRA.
+Récupération des fastq et du génome de référence.
 
-2.  **Snakefile_analysis**\
-Manipulation des fastq: 
+2.  **Snakefile_analysis**\ 
 - Trimming des fastq avec cutadapt 
 - Indexation du génome avec bowtie
 - Mapping des fastq sur le génome de référence avec bowtie et récupération du fichier BAM avec samtools

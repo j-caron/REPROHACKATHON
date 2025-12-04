@@ -49,6 +49,13 @@ Reproduction des données de l'article "Intracellular Staphylococcus aureus pers
 │   │   ├── SRR10379724.bam \
 │   │   ├── SRR10379725.bam \
 │   │   └── SRR10379726.bam \
+│   ├── results \
+│   │   ├── MA_plot.png \
+│   │   ├── MA_plot_tot.png \
+│   │   ├── PCA_plot.png \
+│   │   ├── volcano_plot.png \
+│   │   ├── data_perso.csv \
+│   │   └── comparison_means.csv \
 │   └── trimmed \
 │       ├── SRR10379722_trimmed.fq.gz \
 │       ├── SRR10379723_trimmed.fq.gz \
@@ -126,16 +133,16 @@ Analyse statistique des comptages obtenus avec DESeq2, ajout des id des gènes a
 
 ## Résultats
 
-Les résultats de l'analyse sont disponibles dans le dossier `Output/`.
+Les résultats de l'analyse sont disponibles dans le dossier `Output/results`.
 
 | Type de résultat | Fichier                               | Description                               |
 |------------------|---------------------------------------|-------------------------------------------|
-| Graphique        |                                       | MA plot des données totales               |
-| Graphique        | PCA_plot.png                          | MA plot des gènes liés à la traduction    |
+| Graphique        | MA_plot_tot.png                       | MA plot des données totales               |
+| Graphique        | MA_plot.png                           | MA plot des gènes liés à la traduction    |
 | Graphique        | volcano_plot.png                      | Volcano plot                              |
-| Graphique        |                                       | PCA plot                                  |
-| Tableau          | .csv                                  | Comptages, logFC et nom des gènes         |
-| Tableau          | .csv                                  | Comparaison des données de l'article et de nos données |
+| Graphique        | PCA_plot.png                          | PCA plot                                  |
+| Tableau          | data_perso.csv                        | Comptages, logFC et nom des gènes         |
+| Tableau          | comparion_means.csv                   | Comparaison des données de l'article et de nos données |
 
 ## Auteurs
 

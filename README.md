@@ -62,8 +62,6 @@ Reproduction des données de l'article "Intracellular Staphylococcus aureus pers
 ├── arborescence.txt \
 └── environment.yaml \
 
-8 directories, 48 files
-
 ---
 ## Environnement de calcul utilisé
 

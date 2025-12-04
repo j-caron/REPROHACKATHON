@@ -7,6 +7,7 @@ Reproduction des données de l'article "Intracellular Staphylococcus aureus pers
 . \
 ├── Docker \
 │   ├── DockerFile_R \
+│   ├── Docker_file_MA_plot.dockerfile \
 │   ├── Dockerfile \
 │   └── requirements.txt \
 ├── Outputs \
@@ -63,13 +64,13 @@ Reproduction des données de l'article "Intracellular Staphylococcus aureus pers
 │       ├── SRR10379725_trimmed.fq.gz \
 │       └── SRR10379726_trimmed.fq.gz \
 ├── Snakemake \
+│   ├── DESeq2.R \
+│   ├── MA_plot.R \
+│   ├── Snakefile_R \
 │   ├── Snakefile_analysis \
 │   ├── Snakefile_download \
-│   ├── Snakefile_R \
-│   ├── DESeq2.R
-│   ├── MA_plot.R
 │   └── config.yaml \
-├── arborescence.txt \
+├── README.md \
 └── environment.yaml
 
 ---

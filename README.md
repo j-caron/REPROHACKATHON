@@ -70,7 +70,7 @@ Reproduction des données de l'article "Intracellular Staphylococcus aureus pers
 │   ├── MA_plot.R
 │   └── config.yaml \
 ├── arborescence.txt \
-└── environment.yaml \
+└── environment.yaml
 
 ---
 ## Environnement de calcul utilisé

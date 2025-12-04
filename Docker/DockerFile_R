@@ -1,0 +1,471 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ------------------------------------------------------------
+# 1) Dépendances système
+# ------------------------------------------------------------
+RUN apt-get update && apt-get install -y \
+    wget \
+    build-essential \
+    gfortran \
+    gcc \
+    g++ \
+    make \
+    libreadline-dev \
+    libncurses5-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libpcre3-dev \
+    libcurl4-openssl-dev \
+    libx11-dev \
+    xorg-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libtiff-dev \
+    libicu-dev \
+    libcairo2-dev \
+    ca-certificates
+
+
+# ------------------------------------------------------------
+# 2) Installation R 3.4.1
+# ------------------------------------------------------------
+RUN wget https://cran.r-project.org/src/base/R-3/R-3.4.1.tar.gz && \
+    tar -xzf R-3.4.1.tar.gz && \
+    cd R-3.4.1 && \
+    ./configure --enable-R-shlib && \
+    make -j$(nproc) && \
+    make install && \
+    cd .. && rm -rf R-3.4.1*
+
+# ------------------------------------------------------------
+# 3) URLs archive Bioconductor
+# ------------------------------------------------------------
+
+
+# BiocGenerics
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/BiocGenerics_0.22.1.tar.gz && \
+    R CMD INSTALL BiocGenerics_0.22.1.tar.gz && \
+    rm BiocGenerics_0.22.1.tar.gz
+
+# S4Vectors
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/S4Vectors_0.14.7.tar.gz && \
+    R CMD INSTALL S4Vectors_0.14.7.tar.gz && \
+    rm S4Vectors_0.14.7.tar.gz
+
+# IRanges
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/IRanges_2.10.5.tar.gz && \
+    R CMD INSTALL IRanges_2.10.5.tar.gz && \
+    rm IRanges_2.10.5.tar.gz
+
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/bitops/bitops_1.0-6.tar.gz && \
+    R CMD INSTALL bitops_1.0-6.tar.gz && \
+    rm bitops_1.0-6.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/RCurl/RCurl_1.95-4.8.tar.gz && \
+    R CMD INSTALL RCurl_1.95-4.8.tar.gz && \
+    rm RCurl_1.95-4.8.tar.gz
+
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/data/annotation/src/contrib/GenomeInfoDbData_0.99.0.tar.gz && \
+    R CMD INSTALL GenomeInfoDbData_0.99.0.tar.gz && \
+    rm GenomeInfoDbData_0.99.0.tar.gz
+
+
+# GenomeInfoDb
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/GenomeInfoDb_1.12.3.tar.gz && \
+    R CMD INSTALL GenomeInfoDb_1.12.3.tar.gz && \
+    rm GenomeInfoDb_1.12.3.tar.gz
+
+# zlibbioc
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/zlibbioc_1.22.0.tar.gz && \
+    R CMD INSTALL zlibbioc_1.22.0.tar.gz && \
+    rm zlibbioc_1.22.0.tar.gz
+
+# XVector
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/XVector_0.16.0.tar.gz && \
+    R CMD INSTALL XVector_0.16.0.tar.gz && \
+    rm XVector_0.16.0.tar.gz
+# GenomicRanges
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/GenomicRanges_1.28.6.tar.gz && \
+    R CMD INSTALL GenomicRanges_1.28.6.tar.gz && \
+    rm GenomicRanges_1.28.6.tar.gz
+
+# Biobase
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/Biobase_2.36.2.tar.gz && \
+    R CMD INSTALL Biobase_2.36.2.tar.gz && \
+    rm Biobase_2.36.2.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/matrixStats/matrixStats_0.52.2.tar.gz && \
+    R CMD INSTALL matrixStats_0.52.2.tar.gz && \
+    rm matrixStats_0.52.2.tar.gz
+
+# DelayedArray
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/DelayedArray_0.2.7.tar.gz && \
+    R CMD INSTALL DelayedArray_0.2.7.tar.gz && \
+    rm DelayedArray_0.2.7.tar.gz
+
+# SummarizedExperiment
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/SummarizedExperiment_1.6.5.tar.gz && \
+    R CMD INSTALL SummarizedExperiment_1.6.5.tar.gz && \
+    rm SummarizedExperiment_1.6.5.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/lambda.r/lambda.r_1.2.tar.gz && \
+    R CMD INSTALL lambda.r_1.2.tar.gz && \
+    rm lambda.r_1.2.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/futile.options_1.0.1.tar.gz && \
+    R CMD INSTALL futile.options_1.0.1.tar.gz && \
+    rm futile.options_1.0.1.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/futile.logger_1.4.3.tar.gz && \
+    R CMD INSTALL futile.logger_1.4.3.tar.gz && \
+    rm futile.logger_1.4.3.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/snow/snow_0.4-2.tar.gz && \
+    R CMD INSTALL snow_0.4-2.tar.gz && \
+    rm snow_0.4-2.tar.gz
+
+# BiocParallel
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/BiocParallel_1.10.1.tar.gz && \
+    R CMD INSTALL BiocParallel_1.10.1.tar.gz && \
+    rm BiocParallel_1.10.1.tar.gz
+
+
+
+# Rcpp
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/Rcpp/Rcpp_0.12.12.tar.gz && \
+    R CMD INSTALL Rcpp_0.12.12.tar.gz && \
+    rm Rcpp_0.12.12.tar.gz
+
+# RcppArmadillo
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/RcppArmadillo/RcppArmadillo_0.7.900.2.0.tar.gz && \
+    R CMD INSTALL RcppArmadillo_0.7.900.2.0.tar.gz && \
+    rm RcppArmadillo_0.7.900.2.0.tar.gz
+
+
+### digest
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/digest/digest_0.6.12.tar.gz && \
+    R CMD INSTALL digest_0.6.12.tar.gz && \
+    rm digest_0.6.12.tar.gz
+
+### gtable
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/gtable/gtable_0.2.0.tar.gz && \
+    R CMD INSTALL gtable_0.2.0.tar.gz && \
+    rm gtable_0.2.0.tar.gz
+
+### plyr
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/plyr/plyr_1.8.4.tar.gz && \
+    R CMD INSTALL plyr_1.8.4.tar.gz && \
+    rm plyr_1.8.4.tar.gz
+
+### stringi
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/stringi/stringi_1.1.5.tar.gz && \
+    R CMD INSTALL stringi_1.1.5.tar.gz && \
+    rm stringi_1.1.5.tar.gz
+### magrittr
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/magrittr/magrittr_1.5.tar.gz && \
+    R CMD INSTALL magrittr_1.5.tar.gz && \
+    rm magrittr_1.5.tar.gz
+
+### stringr
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/stringr/stringr_1.2.0.tar.gz && \
+    R CMD INSTALL stringr_1.2.0.tar.gz && \
+    rm stringr_1.2.0.tar.gz
+
+### reshape2
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/reshape2/reshape2_1.4.3.tar.gz && \
+    R CMD INSTALL reshape2_1.4.3.tar.gz && \
+    rm reshape2_1.4.3.tar.gz
+
+### lazyeval
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/lazyeval/lazyeval_0.2.0.tar.gz && \
+    R CMD INSTALL lazyeval_0.2.0.tar.gz && \
+    rm lazyeval_0.2.0.tar.gz
+
+### tibble
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/tibble/tibble_1.3.0.tar.gz && \
+    R CMD INSTALL tibble_1.3.0.tar.gz && \
+    rm tibble_1.3.0.tar.gz
+
+### RColorBrewer
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/RColorBrewer/RColorBrewer_1.1-2.tar.gz && \
+    R CMD INSTALL RColorBrewer_1.1-2.tar.gz && \
+    rm RColorBrewer_1.1-2.tar.gz
+
+### dichromat
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/dichromat/dichromat_2.0-0.tar.gz && \
+    R CMD INSTALL dichromat_2.0-0.tar.gz && \
+    rm dichromat_2.0-0.tar.gz
+
+### colorspace
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/colorspace/colorspace_1.3-2.tar.gz && \
+    R CMD INSTALL colorspace_1.3-2.tar.gz && \
+    rm colorspace_1.3-2.tar.gz
+
+### munsell
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/munsell_0.5.1.tar.gz && \
+    R CMD INSTALL munsell_0.5.1.tar.gz && \
+    rm munsell_0.5.1.tar.gz
+
+### labeling
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/labeling/labeling_0.3.tar.gz && \
+    R CMD INSTALL labeling_0.3.tar.gz && \
+    rm labeling_0.3.tar.gz
+
+### scales
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/scales/scales_0.4.1.tar.gz && \
+    R CMD INSTALL scales_0.4.1.tar.gz && \
+    rm scales_0.4.1.tar.gz
+
+# ggplot2
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/ggplot2/ggplot2_2.2.1.tar.gz && \
+    R CMD INSTALL ggplot2_2.2.1.tar.gz && \
+    rm ggplot2_2.2.1.tar.gz
+
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/Formula/Formula_1.2-2.tar.gz && \
+    R CMD INSTALL Formula_1.2-2.tar.gz && \
+    rm Formula_1.2-2.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/latticeExtra/latticeExtra_0.6-28.tar.gz && \
+    R CMD INSTALL latticeExtra_0.6-28.tar.gz && \
+    rm latticeExtra_0.6-28.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/acepack/acepack_1.4.1.tar.gz && \
+    R CMD INSTALL acepack_1.4.1.tar.gz && \
+    rm acepack_1.4.1.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/gridExtra/gridExtra_2.2.1.tar.gz && \
+    R CMD INSTALL gridExtra_2.2.1.tar.gz && \
+    rm gridExtra_2.2.1.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/data.table/data.table_1.10.4.tar.gz && \
+    R CMD INSTALL data.table_1.10.4.tar.gz && \
+    rm data.table_1.10.4.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/evaluate/evaluate_0.10.tar.gz && \
+    R CMD INSTALL evaluate_0.10.tar.gz && \
+    rm evaluate_0.10.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/digest/digest_0.6.12.tar.gz && \
+    R CMD INSTALL digest_0.6.12.tar.gz && \
+    rm digest_0.6.12.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/mime/mime_0.5.tar.gz && \
+    R CMD INSTALL mime_0.5.tar.gz && \
+    rm mime_0.5.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/highr/highr_0.6.tar.gz && \
+    R CMD INSTALL highr_0.6.tar.gz && \
+    rm highr_0.6.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/markdown/markdown_0.8.tar.gz && \
+    R CMD INSTALL markdown_0.8.tar.gz && \
+    rm markdown_0.8.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/yaml/yaml_2.1.14.tar.gz && \
+    R CMD INSTALL yaml_2.1.14.tar.gz && \
+    rm yaml_2.1.14.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/knitr/knitr_1.15.1.tar.gz && \
+    R CMD INSTALL knitr_1.15.1.tar.gz && \
+    rm knitr_1.15.1.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/htmlTable/htmlTable_1.7.tar.gz && \
+    R CMD INSTALL htmlTable_1.7.tar.gz && \
+    rm htmlTable_1.7.tar.gz
+
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/htmltools/htmltools_0.3.5.tar.gz && \
+    R CMD INSTALL htmltools_0.3.5.tar.gz && \
+    rm htmltools_0.3.5.tar.gz
+
+# base64enc
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/base64enc_0.1-3.tar.gz && \
+    R CMD INSTALL base64enc_0.1-3.tar.gz && \
+    rm base64enc_0.1-3.tar.gz
+
+# viridisLite (dépendance de viridis)
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/viridisLite/viridisLite_0.2.0.tar.gz && \
+    R CMD INSTALL viridisLite_0.2.0.tar.gz && \
+    rm viridisLite_0.2.0.tar.gz
+
+# viridis
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/viridis/viridis_0.4.0.tar.gz && \
+    R CMD INSTALL viridis_0.4.0.tar.gz && \
+    rm viridis_0.4.0.tar.gz
+
+# Hmisc
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/Hmisc/Hmisc_4.0-3.tar.gz && \
+    R CMD INSTALL Hmisc_4.0-3.tar.gz && \
+    rm Hmisc_4.0-3.tar.gz
+
+# locfit
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/locfit/locfit_1.5-9.1.tar.gz && \
+    R CMD INSTALL locfit_1.5-9.1.tar.gz && \
+    rm locfit_1.5-9.1.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/DBI/DBI_0.6.tar.gz && \
+    R CMD INSTALL DBI_0.6.tar.gz && \
+    rm DBI_0.6.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/memoise/memoise_1.0.0.tar.gz && \
+    R CMD INSTALL memoise_1.0.0.tar.gz && \
+    rm memoise_1.0.0.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/BH/BH_1.62.0-1.tar.gz && \
+    R CMD INSTALL BH_1.62.0-1.tar.gz && \
+    rm BH_1.62.0-1.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/plogr/plogr_0.1-1.tar.gz && \
+    R CMD INSTALL plogr_0.1-1.tar.gz && \
+    rm plogr_0.1-1.tar.gz
+
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/RSQLite/RSQLite_1.1-2.tar.gz && \
+    R CMD INSTALL RSQLite_1.1-2.tar.gz && \
+    rm RSQLite_1.1-2.tar.gz
+
+# AnnotationDbi
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/AnnotationDbi_1.38.2.tar.gz && \
+    R CMD INSTALL AnnotationDbi_1.38.2.tar.gz && \
+    rm AnnotationDbi_1.38.2.tar.gz
+
+RUN apt-get update && \
+    apt-get install -y libxml2-dev
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/XML/XML_3.99-0.1.tar.gz && \
+    R CMD INSTALL XML_3.99-0.1.tar.gz && \
+    rm XML_3.99-0.1.tar.gz
+
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/xtable/xtable_1.8-2.tar.gz && \
+    R CMD INSTALL xtable_1.8-2.tar.gz && \
+    rm xtable_1.8-2.tar.gz
+
+# annotate
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/annotate_1.54.0.tar.gz && \
+    R CMD INSTALL annotate_1.54.0.tar.gz && \
+    rm annotate_1.54.0.tar.gz
+
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/genefilter_1.58.1.tar.gz && \
+    R CMD INSTALL genefilter_1.58.1.tar.gz && \
+    rm genefilter_1.58.1.tar.gz
+
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/geneplotter_1.54.0.tar.gz && \
+    R CMD INSTALL geneplotter_1.54.0.tar.gz && \
+    rm geneplotter_1.54.0.tar.gz
+
+# ------------------------------------------------------------
+# 6) Installation DESeq2 1.16.1
+# ------------------------------------------------------------
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/DESeq2_1.16.1.tar.gz && \
+    R CMD INSTALL DESeq2_1.16.1.tar.gz && \
+    rm DESeq2_1.16.1.tar.gz
+# Installation EdgeR + Limma + ggrepel
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/limma_3.32.10.tar.gz && \
+    R CMD INSTALL limma_3.32.10.tar.gz && \
+    rm limma_3.32.10.tar.gz
+
+RUN cd /tmp && \
+    wget https://mghp.osn.xsede.org/bir190004-bucket01/archive.bioconductor.org/packages/3.5/bioc/src/contrib/edgeR_3.18.1.tar.gz && \
+    R CMD INSTALL edgeR_3.18.1.tar.gz && \
+    rm edgeR_3.18.1.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/rlang/rlang_0.4.0.tar.gz && \
+    R CMD INSTALL rlang_0.4.0.tar.gz && \
+    rm rlang_0.4.0.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/withr/withr_2.1.2.tar.gz && \
+    R CMD INSTALL withr_2.1.2.tar.gz && \
+    rm withr_2.1.2.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/ggrepel/ggrepel_0.8.0.tar.gz && \
+    R CMD INSTALL ggrepel_0.8.0.tar.gz && \
+    rm ggrepel_0.8.0.tar.gz
+
+RUN cd /tmp && \
+    wget https://cran.r-project.org/src/contrib/Archive/Cairo/Cairo_1.5-9.tar.gz && \
+    R CMD INSTALL Cairo_1.5-9.tar.gz && \
+    rm Cairo_1.5-9.tar.gz
+
+# ------------------------------------------------------------
+# 7) Vérification
+# ------------------------------------------------------------
+RUN R -e "packageVersion('DESeq2')"
+
+CMD ["R"]

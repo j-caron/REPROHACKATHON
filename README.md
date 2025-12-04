@@ -66,6 +66,8 @@ Reproduction des données de l'article "Intracellular Staphylococcus aureus pers
 │   ├── Snakefile_analysis \
 │   ├── Snakefile_download \
 │   ├── Snakefile_R \
+│   ├── DESeq2.R
+│   ├── MA_plot.R
 │   └── config.yaml \
 ├── arborescence.txt \
 └── environment.yaml \

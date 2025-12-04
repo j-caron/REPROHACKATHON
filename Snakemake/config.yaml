@@ -1,0 +1,26 @@
+dataGenome: "Outputs/genome"
+genomeURL: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=CP000253.1&rettype=fasta"
+gffURL: "https://www.ncbi.nlm.nih.gov/sviewer/viewer.cgi?db=nuccore&report=gff3&id=CP000253.1"
+kegg_org: "sao"
+
+dataFastq: "Outputs/fastq"
+dataTrimmed: "Outputs/trimmed"
+dataMapped: "Outputs/mapped"
+dataCounts: "Outputs/counts"
+
+counts_file: "Outputs/counts/all_counts_with_header.txt"
+article_file: "Outputs/GSE139659_IPvsctrl.complete.xls.gz"
+kegg_file: "Outputs/genome/kegg_pathways.tsv"
+
+docker_image: "docker://agash00/r341_deseq2:1.16"
+docker_image_plot: "docker://agash00/r341_keggrest:v1"
+
+threads: 4
+
+sra_accessions:
+  - SRR10379721
+  - SRR10379722
+  - SRR10379723
+  - SRR10379724
+  - SRR10379725
+  - SRR10379726

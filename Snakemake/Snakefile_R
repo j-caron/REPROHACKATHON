@@ -1,0 +1,68 @@
+###############################################
+# Snakefile_R — pipeline DESeq2 seul
+###############################################
+
+configfile: "Snakemake/config.yaml"
+shell.executable("/bin/bash")
+
+###############################################
+# RULE ALL
+###############################################
+
+rule all:
+    input:
+        "Outputs/results/volcano_plot.png",
+        "Outputs/results/PCA_plot.png",
+        "Outputs/results/data_perso.csv",
+        "Outputs/results/comparison_means.csv",
+        "Outputs/results/MA_plot.png",
+        "Outputs/results/MA_plot_tot.png"
+
+
+###############################################
+# Rule: Télécharger le tableau de l'article
+###############################################
+
+rule download_article_table:
+    output:
+        "Outputs/GSE139659_IPvsctrl.complete.xls.gz"
+    shell:
+        """
+        mkdir -p data
+        wget -O {output} "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE139659&format=file&file=GSE139659%5FIPvsctrl%2Ecomplete%2Exls%2Egz"
+        """
+
+###############################################
+# Rule: Analyse DESeq2
+###############################################
+
+rule deseq_analysis:
+    input:
+        counts  = config["counts_file"],
+        article = config["article_file"]
+    output:
+        volcano = "Outputs/results/volcano_plot.png",
+        pca     = "Outputs/results/PCA_plot.png",
+        data_perso = "Outputs/results/data_perso.csv",
+        comparison = "Outputs/results/comparison_means.csv",
+        MA_plot_tot = "Outputs/results/MA_plot_tot.png"
+    params:
+        outdir = "Outputs/results"
+    container:
+        config["docker_image"]
+    script:
+        "DESeq2.R"
+
+rule ma_plot:
+    input:
+        data_perso = "Outputs/results/data_perso.csv",
+        kegg = config["kegg_file"]
+    output:
+        "Outputs/results/MA_plot.png"
+    params:
+        outdir = "Outputs/results"
+    container:
+        config["docker_image_plot"]
+    script:
+        "MA_plot.R"
+

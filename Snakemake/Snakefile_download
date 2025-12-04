@@ -1,0 +1,67 @@
+configfile: "Snakemake/config.yaml"
+shell.executable("/bin/bash")
+
+SAMPLES = config["sra_accessions"]
+
+rule all:
+    input:
+        expand(f"{config['dataFastq']}/{{sample}}.fastq", sample=SAMPLES),
+        f"{config['dataGenome']}/genome.fasta",
+        f"{config['dataGenome']}/genome.gff",
+        f"{config['dataGenome']}/kegg_pathways.tsv"
+
+
+# Download FASTQ
+rule download_fastq:
+    output:
+        f"{config['dataFastq']}/{{sample}}.fastq"
+    params:
+        outdir = config["dataFastq"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.1"
+    threads:
+        config["threads"]
+    shell:
+        r"""
+        mkdir -p "{params.outdir}"
+        fasterq-dump {wildcards.sample} -O "{params.outdir}" --threads {threads}
+        """
+
+# Download Genome
+rule download_genome:
+    output:
+        f"{config['dataGenome']}/genome.fasta"
+    params:
+        genome_url = config["genomeURL"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.1"
+    shell:
+        r"""
+        mkdir -p "{config[dataGenome]}"
+        wget -q -O "{output}" "{params.genome_url}"
+        """
+
+# Download only the GFF annotations
+rule download_annotations:
+    output:
+        gff = f"{config['dataGenome']}/genome.gff"
+    params:
+        gff_url = config["gffURL"]
+    shell:
+        r"""
+        mkdir -p "{config[dataGenome]}"
+        wget -O "{output}" "{params.gff_url}"
+        """
+
+
+# Download KEGG Gene-Pathway Mapping
+rule download_kegg_pathways:
+    output:
+        f"{config['dataGenome']}/kegg_pathways.tsv"
+    params:
+        org = config["kegg_org"]
+    shell:
+        r"""
+        mkdir -p "{config[dataGenome]}"
+        wget -q -O "{output}" "https://rest.kegg.jp/link/pathway/{params.org}"
+        """

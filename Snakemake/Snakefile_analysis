@@ -1,0 +1,149 @@
+configfile: "Snakemake/config.yaml"
+shell.executable("/bin/bash")
+
+SAMPLES = config["sra_accessions"]
+
+rule all:
+    input:
+        expand(f"{config['dataMapped']}/{{sample}}.bam", sample=SAMPLES),
+        f"{config['dataCounts']}/all_counts_with_header.txt"
+
+# Trimming 
+rule trimming:
+    input:
+        f"{config['dataFastq']}/{{sample}}.fastq"
+    output:
+        f"{config['dataTrimmed']}/{{sample}}_trimmed.fq.gz"
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.1"
+    threads:
+        config["threads"]
+    shell:
+        """
+        mkdir -p "{config[dataTrimmed]}"
+        cutadapt -m 25 -o {output} {input}
+        """
+
+# Indexation du génome
+rule index_genome:
+    input:
+        f"{config['dataGenome']}/genome.fasta"
+    output:
+        expand(
+            f"{config['dataGenome']}/genome.{{ext}}",
+            ext=["1.ebwt","2.ebwt","3.ebwt","4.ebwt","rev.1.ebwt","rev.2.ebwt"]
+        )
+    params:
+        genomedir = config["dataGenome"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.1"
+    shell:
+        """
+        bowtie-build {input} {params.genomedir}/genome
+        """
+
+# Mapping
+rule mapping:
+    input:
+        trimmed = f"{config['dataTrimmed']}/{{sample}}_trimmed.fq.gz",
+        index = expand(
+            f"{config['dataGenome']}/genome.{{ext}}",
+            ext=["1.ebwt","2.ebwt","3.ebwt","4.ebwt","rev.1.ebwt","rev.2.ebwt"]
+        )
+    output:
+        f"{config['dataMapped']}/{{sample}}.bam"
+    params:
+        genomedir = config["dataGenome"],
+        mapdir = config["dataMapped"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.1"
+    threads:
+        config["threads"]
+    shell:
+        r"""
+        mkdir -p "{params.mapdir}"
+
+        # Décompressession du fichier fastq 
+        TMPFASTQ="{params.mapdir}/{wildcards.sample}_tmp.fq"
+        gunzip -c {input.trimmed} > $TMPFASTQ
+
+        bowtie -q -S {params.genomedir}/genome $TMPFASTQ \
+        | samtools view -Sb - > {output}
+
+        # Nettoyage
+        rm -f $TMPFASTQ
+        """
+
+
+# Comptage avec FeatureCounts
+rule featurecounts:
+    input:
+        bam = f"{config['dataMapped']}/{{sample}}.bam",
+        gtf = f"{config['dataGenome']}/genome.gff"
+    output:
+        counts = f"{config['dataCounts']}/{{sample}}_counts.txt"
+    threads:
+        config["threads"]
+    container:
+        "docker://mmousg/reprohackaton-tools:v1.1"
+    shell:
+        """
+        mkdir -p "{config[dataCounts]}"
+        featureCounts -T {threads} -t gene -g locus_tag -s 1 \
+            -a {input.gtf} -o {output.counts} {input.bam}
+        """
+
+rule merge_counts:
+    input:
+        expand(f"{config['dataCounts']}/{{sample}}_counts.txt", sample=SAMPLES)
+    output:
+        f"{config['dataCounts']}/all_counts.txt"
+    shell:
+        r"""
+        mkdir -p "{config[dataCounts]}"
+
+        # extraction des identifiants
+        cut -f1 {input[0]} > gene_ids.tmp
+
+        # en-tête des échantillons
+        echo -ne "Geneid" > header.tmp
+        for f in {input}; do
+            sample=$(basename "$f" | sed 's/_counts.txt//')
+            echo -ne "\t$sample" >> header.tmp
+        done
+        echo >> header.tmp
+
+        # extraction des colonnes de comptages
+        tmp_files=()
+        for f in {input}; do
+            tmp="${{f}}.tmp"
+            cut -f7 "$f" > "$tmp"
+            tmp_files+=("$tmp")
+        done
+
+        # fusion des colonnes
+        paste gene_ids.tmp ${{tmp_files[@]}} > body.tmp
+
+        # fichier final
+        cat header.tmp body.tmp > {output}
+
+        # nettoyage des fichiers temporaires
+        rm -f gene_ids.tmp ${{tmp_files[@]}} header.tmp body.tmp
+        """
+
+
+rule add_header:
+    input:
+        f"{config['dataCounts']}/all_counts.txt"
+    output:
+        f"{config['dataCounts']}/all_counts_with_header.txt"
+    shell:
+        r"""
+        cd {config[dataCounts]}
+
+        # création de l'en-tête
+        echo -e "Geneid\tSRR10379721\tSRR10379722\tSRR10379723\tSRR10379724\tSRR10379725\tSRR10379726" > all_counts_with_header.txt
+
+        # ajout des lignes de données
+        tail -n +4 all_counts.txt >> all_counts_with_header.txt
+        """

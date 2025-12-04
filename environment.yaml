@@ -1,0 +1,6 @@
+name: snakemake_env
+channels:
+  - conda-forge
+dependencies:
+  - apptainer
+  - snakemake
